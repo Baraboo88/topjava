@@ -1,7 +1,4 @@
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
-<%@ taglib prefix="javatime" uri="http://sargue.net/jsptags/time" %>
 <%@ taglib prefix="f" uri="http://example.com/functions" %>
 <%--
   Created by IntelliJ IDEA.
@@ -23,22 +20,28 @@
         <th>Description</th>
         <th>Calories</th>
     </tr>
-
     <c:forEach var="meal" items="${requestScope.mealsTo}">
-    <tr>
-
-            <td>
-
+        <c:if test="${meal.excess}">
+            <tr bgcolor="#FF0000">
+                <td>
                         ${f:formatLocalDateTime(meal.dateTime, 'dd.MM.yyyy HH:mm')}
+                </td>
+                <td>${meal.description}</td>
+                <td>${meal.calories}</td>
 
-            </td>
-            <td>${meal.description}</td>
-            <td>${meal.calories}</td>
+            </tr>
+        </c:if>
+        <c:if test="${not meal.excess}">
+            <tr bgcolor="#7CFC00">
+                <td>
+                        ${f:formatLocalDateTime(meal.dateTime, 'dd.MM.yyyy HH:mm')}
+                </td>
+                <td>${meal.description}</td>
+                <td>${meal.calories}</td>
 
-    </tr>
+            </tr>
+        </c:if>
     </c:forEach>
-
-
 </table>
 </body>
 </html>
