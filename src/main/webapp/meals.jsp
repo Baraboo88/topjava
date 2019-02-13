@@ -14,33 +14,20 @@
 </head>
 <body>
 <table border="1">
-
     <tr>
         <th>Time</th>
         <th>Description</th>
         <th>Calories</th>
     </tr>
     <c:forEach var="meal" items="${requestScope.mealsTo}">
-        <c:if test="${meal.excess}">
-            <tr bgcolor="#FF0000">
+        <c:set var="color" value="${meal.excess?'#FF0000':'7CFC00'}"/>
+            <tr bgcolor=${color}>
                 <td>
-                        ${f:formatLocalDateTime(meal.dateTime, 'dd.MM.yyyy HH:mm')}
+                        ${f:formatLocalDateTime(meal.dateTime)}
                 </td>
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
-
             </tr>
-        </c:if>
-        <c:if test="${not meal.excess}">
-            <tr bgcolor="#7CFC00">
-                <td>
-                        ${f:formatLocalDateTime(meal.dateTime, 'dd.MM.yyyy HH:mm')}
-                </td>
-                <td>${meal.description}</td>
-                <td>${meal.calories}</td>
-
-            </tr>
-        </c:if>
     </c:forEach>
 </table>
 </body>

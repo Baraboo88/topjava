@@ -5,9 +5,9 @@ import java.time.format.DateTimeFormatter;
 
 public class Dates {
     private Dates() {}
-
-    public static String formatLocalDateTime(LocalDateTime localDateTime, String pattern) {
-        return localDateTime.format(DateTimeFormatter.ofPattern(pattern));
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    public static String formatLocalDateTime(LocalDateTime localDateTime) {
+        return localDateTime.format(formatter);
     }
 }
 
