@@ -10,5 +10,18 @@
     <li><a href="users">Users</a></li>
     <li><a href="meals">Meals</a></li>
 </ul>
+<br>
+
+    <form action="meals" method="get">
+        <input type="hidden" name="action" value="userId"/>
+        Select user:
+        <select name="userSelect" onchange="this.form.submit()">
+        <option value="">Select...</option>
+        <option value="1">User 1</option>
+        <option value="2">User 2</option>
+        </select>
+
+    </form>
+
 </body>
 </html>

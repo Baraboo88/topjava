@@ -15,6 +15,7 @@
             color: red;
         }
     </style>
+
 </head>
 <body>
 <section>
@@ -22,6 +23,25 @@
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
     <hr/>
+
+    <form method="get" action="meals">
+        <input type="hidden" name="action" value="filter"/>
+        <table>
+        <tr>
+            <td>Filter:</td>
+            <td><input type="date" name="start_date"  placeholder="Start Date"></td>
+            <td><input type="date" name="end_date"  placeholder="End Date"></td>
+            <td><input type="time" name="start_time"  placeholder="Start Time"></td>
+            <td><input type="time" name="end_time"  placeholder="End Time"></td>
+            <td> <input type="submit" value="Submit"></td>
+            <td> <input type="reset" value="Reset"></td>
+
+        </tr>
+        </table>
+    </form>
+
+        <br>
+
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>
