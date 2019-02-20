@@ -44,7 +44,9 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        return new LinkedList<>(repository.values()).stream().sorted(Comparator.comparing(User::getName)).collect(Collectors.toList());
+        return repository.values().stream()
+                .sorted(Comparator.comparing(User::getSurname).thenComparing(User::getName))
+                .collect(Collectors.toList());
     }
 
     @Override

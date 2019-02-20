@@ -19,15 +19,20 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 @Controller
 public class MealRestController {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private MealService service;
 
 
-    public List<Meal> getAll() {
+    private List<Meal> getAll() {
         log.info("getAll");
         return service.getAll(SecurityUtil.authUserId());
+    }
+
+    private List<Meal> getAllWithFilter(LocalTime starTime, LocalTime endTime, LocalDate startDate, LocalDate endDate) {
+        log.info("getAllWithFilter");
+        return service.getAllWithFilter(SecurityUtil.authUserId(), starTime, endTime, startDate, endDate);
     }
 
     public Meal get(int id) {
@@ -52,6 +57,7 @@ public class MealRestController {
         service.update(SecurityUtil.authUserId(), meal);
     }
 
+
     public List<MealTo> getMealTo() {
 
         log.info("mealto without filter");
@@ -62,11 +68,12 @@ public class MealRestController {
 
     public List<MealTo> getFilteredMealTo(LocalTime startTime, LocalTime endTime, LocalDate startDate, LocalDate endDate) {
         log.info("mealto WITH filter");
-        return MealsUtil.getFilteredWithExcess(getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY,
-                startTime != null ? startTime : LocalTime.MIN,
-                endTime != null ? endTime : LocalTime.MAX,
+
+        return MealsUtil.getWithExcess(getAllWithFilter(startTime != null ? startTime : LocalTime.MIN, endTime != null ? endTime : LocalTime.MAX,
                 startDate != null ? startDate : LocalDate.MIN,
-                endDate != null ? endDate : LocalDate.MAX);
+                endDate != null ? endDate : LocalDate.MAX),
+                MealsUtil.DEFAULT_CALORIES_PER_DAY);
+
 
     }
 

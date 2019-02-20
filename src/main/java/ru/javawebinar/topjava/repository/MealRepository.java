@@ -1,12 +1,11 @@
 package ru.javawebinar.topjava.repository;
 
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 
-import java.util.Collection;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
 
 public interface MealRepository {
 
@@ -17,4 +16,6 @@ public interface MealRepository {
     Meal get(int userId, int id);
 
     List <Meal> getAll(int userId);
+
+    public List<Meal> getAllWithFilter(int userId, LocalTime startTime, LocalTime endTime, LocalDate startDate, LocalDate endDate);
 }

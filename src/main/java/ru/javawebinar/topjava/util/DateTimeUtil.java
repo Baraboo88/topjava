@@ -10,23 +10,9 @@ import java.time.temporal.Temporal;
 public class DateTimeUtil {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static boolean isBetween(Temporal td, Temporal start, Temporal end) {
+    public static <T extends Comparable<T>>  boolean isBetween(T td, T start, T end) {
+        return td.compareTo(start) >= 0 && td.compareTo(end) <= 0;
 
-
-        try {
-            LocalTime localTimeTemp = LocalTime.from(td);
-            LocalTime starTimeTemp = LocalTime.from(start);
-            LocalTime endTimeTemp = LocalTime.from(end);
-
-            return localTimeTemp.compareTo(starTimeTemp) >= 0 && localTimeTemp.compareTo(endTimeTemp) <= 0;
-        } catch (DateTimeException e) {
-            LocalDate localDateTemp = LocalDate.from(td);
-            LocalDate starDateTemp = LocalDate.from(start);
-            LocalDate endDateTemp = LocalDate.from(end);
-
-            return localDateTemp.compareTo(starDateTemp) >= 0 && localDateTemp.compareTo(endDateTemp) <= 0;
-
-        }
     }
 
     public static String toString(LocalDateTime ldt) {
