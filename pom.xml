@@ -32,6 +32,8 @@
         <finalName>topjava</finalName>
         <defaultGoal>package</defaultGoal>
         <plugins>
+
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -49,6 +51,7 @@
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 
