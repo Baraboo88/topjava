@@ -18,7 +18,7 @@ import java.util.List;
 
 import static ru.javawebinar.topjava.MealTestData.*;
 
-@ContextConfiguration(value = "classpath:spring/spring-db.xml")
+@ContextConfiguration({"classpath:spring/spring-db.xml", "classpath:spring/spring-app.xml"})
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 
@@ -35,81 +35,80 @@ public class MealServiceTest {
 
     @Test
     public void get() throws Exception {
-        Meal meal = service.get(MEAL_ONE_ID, SecurityUtil.authUserId());
-
-        assertMatch(meal, MEAL_ONE);
+        Meal meal = service.get(USER_ONE_MEAL_ONE_ID, 100000);
+        assertMatch(meal, USER_ONE_MEAL_ONE);
     }
 
     @Test(expected = NotFoundException.class)
     public void getByWrongUser() throws Exception {
-        service.get(MEAL_ONE_ID, SecurityUtil.authUserId() + 1);
+        service.get(USER_ONE_MEAL_ONE_ID, 100001);
     }
 
     @Test(expected = NotFoundException.class)
-    public void getByWrongId() throws Exception {
-        service.get(25, SecurityUtil.authUserId());
+    public void getByWrongMealId() throws Exception {
+        service.get(USER_TWO_MEAL_THREE_ID, 100000);
     }
 
 
     @Test
     public void delete() throws Exception {
-        service.delete(MEAL_ONE_ID, SecurityUtil.authUserId());
-        assertMatch(service.getAll(SecurityUtil.authUserId()), MEAL_TWO);
+        service.delete(USER_ONE_MEAL_ONE_ID, USER_ONE_ID);
+        assertMatch(service.getAll(USER_ONE_ID), USER_ONE_MEAL_SIX, USER_ONE_MEAL_TWO);
     }
 
     @Test(expected = NotFoundException.class)
     public void deletedByWrongUser() throws Exception {
-        service.delete(MEAL_ONE_ID, SecurityUtil.authUserId() + 1);
+        service.delete(USER_ONE_MEAL_ONE_ID, USER_TWO_ID);
     }
 
     @Test(expected = NotFoundException.class)
     public void deletedByWrongId() throws Exception {
-        service.delete(25, SecurityUtil.authUserId());
+        service.delete(USER_TWO_MEAL_FIVE_ID, USER_ONE_ID);
     }
 
     @Test
     public void getBetweenDateTimes() throws Exception {
-        List<Meal> meals = service.getBetweenDateTimes(LocalDateTime.of(2019, Month.FEBRUARY, 23, 8, 0),
+        List<Meal> meals = service.getBetweenDateTimes(LocalDateTime.of(2019, Month.FEBRUARY, 24, 0, 0),
                 LocalDateTime.of(2019, Month.FEBRUARY, 24, 23, 0),
-                SecurityUtil.authUserId());
-        assertMatch(meals, MEAL_ONE);
+                USER_ONE_ID);
+        assertMatch(meals, USER_ONE_MEAL_TWO, USER_ONE_MEAL_ONE);
     }
 
     @Test
     public void getAll() throws Exception {
-        List<Meal> meals = service.getAll(SecurityUtil.authUserId());
-        assertMatch(meals, MEAL_TWO, MEAL_ONE);
+        List<Meal> meals = service.getAll(USER_ONE_ID);
+        assertMatch(meals, USER_ONE_MEAL_SIX, USER_ONE_MEAL_TWO, USER_ONE_MEAL_ONE);
 
     }
 
     @Test
     public void update() throws Exception {
-        Meal meal = new Meal(MEAL_ONE);
+        Meal meal = new Meal(USER_ONE_MEAL_ONE);
         meal.setCalories(700);
         meal.setDescription("Полдник");
         service.update(meal, SecurityUtil.authUserId());
-        assertMatch(service.get(MEAL_ONE_ID, SecurityUtil.authUserId()), meal);
+        assertMatch(service.get(USER_ONE_MEAL_ONE_ID, SecurityUtil.authUserId()), meal);
     }
 
     @Test(expected = NotFoundException.class)
     public void updateByWrongUser() throws Exception {
 
-        Meal newMeal = new Meal(MEAL_ONE);
-        newMeal.setId(44);
-        service.update(newMeal, SecurityUtil.authUserId());
+        Meal newMeal = new Meal(USER_ONE_MEAL_ONE);
+        newMeal.setId(USER_TWO_MEAL_FIVE_ID);
+        service.update(newMeal, USER_ONE_ID);
     }
 
     @Test(expected = NotFoundException.class)
     public void updateByWrongId() throws Exception {
-        service.update(MEAL_ONE, SecurityUtil.authUserId() + 1);
+        service.update(USER_ONE_MEAL_ONE, USER_TWO_ID);
     }
 
     @Test
     public void create() throws Exception {
         Meal newMeal = new Meal(null, LocalDateTime.of(2019, Month.FEBRUARY, 26, 13, 0), "Обед", 500);
-        Meal created = service.create(newMeal, SecurityUtil.authUserId());
+        Meal created = service.create(newMeal, USER_ONE_ID);
         newMeal.setId(created.getId());
-        assertMatch(service.getAll(SecurityUtil.authUserId()), newMeal, MEAL_TWO, MEAL_ONE);
+        assertMatch(service.getAll(SecurityUtil.authUserId()), newMeal,USER_ONE_MEAL_SIX, USER_ONE_MEAL_TWO, USER_ONE_MEAL_ONE);
     }
 
 }
