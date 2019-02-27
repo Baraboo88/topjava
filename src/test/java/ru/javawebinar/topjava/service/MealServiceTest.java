@@ -10,7 +10,6 @@ import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -35,18 +34,13 @@ public class MealServiceTest {
 
     @Test
     public void get() throws Exception {
-        Meal meal = service.get(USER_ONE_MEAL_ONE_ID, 100000);
+        Meal meal = service.get(USER_ONE_MEAL_ONE_ID, USER_ONE_ID);
         assertMatch(meal, USER_ONE_MEAL_ONE);
     }
 
     @Test(expected = NotFoundException.class)
     public void getByWrongUser() throws Exception {
-        service.get(USER_ONE_MEAL_ONE_ID, 100001);
-    }
-
-    @Test(expected = NotFoundException.class)
-    public void getByWrongMealId() throws Exception {
-        service.get(USER_TWO_MEAL_THREE_ID, 100000);
+        service.get(USER_ONE_MEAL_ONE_ID, USER_TWO_ID);
     }
 
 
@@ -59,11 +53,6 @@ public class MealServiceTest {
     @Test(expected = NotFoundException.class)
     public void deletedByWrongUser() throws Exception {
         service.delete(USER_ONE_MEAL_ONE_ID, USER_TWO_ID);
-    }
-
-    @Test(expected = NotFoundException.class)
-    public void deletedByWrongId() throws Exception {
-        service.delete(USER_TWO_MEAL_FIVE_ID, USER_ONE_ID);
     }
 
     @Test
@@ -86,8 +75,8 @@ public class MealServiceTest {
         Meal meal = new Meal(USER_ONE_MEAL_ONE);
         meal.setCalories(700);
         meal.setDescription("Полдник");
-        service.update(meal, SecurityUtil.authUserId());
-        assertMatch(service.get(USER_ONE_MEAL_ONE_ID, SecurityUtil.authUserId()), meal);
+        service.update(meal, USER_ONE_ID);
+        assertMatch(service.get(USER_ONE_MEAL_ONE_ID, USER_ONE_ID), meal);
     }
 
     @Test(expected = NotFoundException.class)
@@ -98,17 +87,13 @@ public class MealServiceTest {
         service.update(newMeal, USER_ONE_ID);
     }
 
-    @Test(expected = NotFoundException.class)
-    public void updateByWrongId() throws Exception {
-        service.update(USER_ONE_MEAL_ONE, USER_TWO_ID);
-    }
 
     @Test
     public void create() throws Exception {
         Meal newMeal = new Meal(null, LocalDateTime.of(2019, Month.FEBRUARY, 26, 13, 0), "Обед", 500);
         Meal created = service.create(newMeal, USER_ONE_ID);
         newMeal.setId(created.getId());
-        assertMatch(service.getAll(SecurityUtil.authUserId()), newMeal,USER_ONE_MEAL_SIX, USER_ONE_MEAL_TWO, USER_ONE_MEAL_ONE);
+        assertMatch(service.getAll(USER_ONE_ID), newMeal,USER_ONE_MEAL_SIX, USER_ONE_MEAL_TWO, USER_ONE_MEAL_ONE);
     }
 
 }
