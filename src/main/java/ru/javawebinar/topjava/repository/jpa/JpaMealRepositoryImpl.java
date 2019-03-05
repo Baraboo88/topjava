@@ -16,7 +16,6 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class JpaMealRepositoryImpl implements MealRepository {
 
-
     @PersistenceContext
     private EntityManager em;
 
@@ -36,14 +35,12 @@ public class JpaMealRepositoryImpl implements MealRepository {
             } else {
                 return null;
             }
-
         }
     }
 
     @Override
     @Transactional
     public boolean delete(int id, int userId) {
-
         return em.createNamedQuery(Meal.DELETE)
                 .setParameter("id", id)
                 .setParameter("userId", userId)
@@ -52,12 +49,8 @@ public class JpaMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        List<Meal> meals = em.createNamedQuery(Meal.GET, Meal.class)
-                .setParameter("id", id)
-                .setParameter("userId", userId)
-                .getResultList();
-
-        return DataAccessUtils.singleResult(meals);
+        Meal tempMeal = em.find(Meal.class, id);
+        return tempMeal.getUser().getId() == userId ? tempMeal : null;
     }
 
     @Override
@@ -69,13 +62,10 @@ public class JpaMealRepositoryImpl implements MealRepository {
 
     @Override
     public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-
-
         return em.createNamedQuery(Meal.GET_BETWEEN, Meal.class)
                 .setParameter("startDate", startDate)
                 .setParameter("endDate", endDate)
                 .setParameter("userId", userId)
                 .getResultList();
-
     }
 }

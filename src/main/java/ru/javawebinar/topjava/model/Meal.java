@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.model;
 
 import org.hibernate.validator.constraints.Range;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -12,9 +13,9 @@ import java.time.LocalTime;
 
 @NamedQueries({
         @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id AND m.user.id=:userId"),
-        @NamedQuery(name = Meal.GET_BETWEEN, query = "SELECT u FROM Meal u LEFT JOIN FETCH u.user WHERE u.user.id =:userId AND u.dateTime BETWEEN :startDate AND :endDate ORDER BY u.dateTime DESC"),
-        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT u FROM Meal u LEFT JOIN FETCH u.user WHERE u.user.id=:id ORDER BY u.dateTime desc "),
-        @NamedQuery(name = Meal.GET, query = "SELECT u FROM Meal u LEFT JOIN FETCH u.user WHERE u.id=:id and u.user.id=:userId")
+        @NamedQuery(name = Meal.GET_BETWEEN, query = "SELECT u FROM Meal u WHERE u.user.id =:userId AND u.dateTime BETWEEN :startDate AND :endDate ORDER BY u.dateTime DESC"),
+        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT u FROM Meal u WHERE u.user.id=:id ORDER BY u.dateTime desc "),
+        @NamedQuery(name = Meal.GET, query = "SELECT u FROM Meal u WHERE u.id=:id and u.user.id=:userId")
 })
 @Entity
 @Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date_time"}, name = "meals_unique_user_datetime_idx")})
@@ -25,10 +26,9 @@ public class Meal extends AbstractBaseEntity {
     public static final String GET = "Meal.get";
     public static final String GET_BETWEEN = "Meal.getBetween";
 
-    @Column(name = "date_time", columnDefinition = "TIMESTAMP")
+    @Column(name = "date_time", columnDefinition = "TIMESTAMP", nullable = false)
     @NotNull
     private LocalDateTime dateTime;
-
 
     @Column(name = "description", nullable = false)
     @NotBlank
@@ -40,7 +40,8 @@ public class Meal extends AbstractBaseEntity {
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
+    @NonNull
     private User user;
 
     public Meal() {

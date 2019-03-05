@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.After;
 import org.junit.AssumptionViolatedException;
 import org.junit.Rule;
 import org.junit.Test;
@@ -7,6 +8,8 @@ import org.junit.rules.ExpectedException;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -18,9 +21,9 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
-
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
@@ -37,34 +40,25 @@ public class MealServiceTest {
         SLF4JBridgeHandler.install();
     }
 
-    private static final Logger logger = Logger.getLogger("");
+    private static Map<String, Long> testsTime = new HashMap<>();
 
-    private static void logInfo(Description description, String status, long nanos) {
+    private static final Logger logger = LoggerFactory.getLogger(MealServiceTest.class);
+
+
+
+    private static void logInfo(Description description, long nanos) {
+
         String testName = description.getMethodName();
-        logger.info(String.format("Test %s %s, spent %d microseconds",
-                testName, status, TimeUnit.NANOSECONDS.toMicros(nanos)));
+        testsTime.put(testName, nanos);
+        logger.info(String.format("Test %s - %d microseconds",
+                testName, TimeUnit.NANOSECONDS.toMicros(nanos)));
     }
 
     @Rule
     public Stopwatch stopwatch = new Stopwatch() {
         @Override
-        protected void succeeded(long nanos, Description description) {
-            logInfo(description, "succeeded", nanos);
-        }
-
-        @Override
-        protected void failed(long nanos, Throwable e, Description description) {
-            logInfo(description, "failed", nanos);
-        }
-
-        @Override
-        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
-            logInfo(description, "skipped", nanos);
-        }
-
-        @Override
         protected void finished(long nanos, Description description) {
-            logInfo(description, "finished", nanos);
+            logInfo(description, nanos);
         }
     };
 
@@ -132,5 +126,9 @@ public class MealServiceTest {
         assertMatch(service.getBetweenDates(
                 LocalDate.of(2015, Month.MAY, 30),
                 LocalDate.of(2015, Month.MAY, 30), USER_ID), MEAL3, MEAL2, MEAL1);
+    }
+    @After
+    public void testTimes(){
+        testsTime.forEach((k, v) -> logger.info("{} - {} microseconds", k, v));
     }
 }
