@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.model;
 
 import org.hibernate.validator.constraints.Range;
-import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -41,7 +40,7 @@ public class Meal extends AbstractBaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @NonNull
+    @NotNull
     private User user;
 
     public Meal() {

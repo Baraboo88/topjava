@@ -1,9 +1,6 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.After;
-import org.junit.AssumptionViolatedException;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
@@ -49,9 +46,10 @@ public class MealServiceTest {
     private static void logInfo(Description description, long nanos) {
 
         String testName = description.getMethodName();
-        testsTime.put(testName, nanos);
+        Long micro = TimeUnit.NANOSECONDS.toMicros(nanos);
+        testsTime.put(testName, micro);
         logger.info(String.format("Test %s - %d microseconds",
-                testName, TimeUnit.NANOSECONDS.toMicros(nanos)));
+                testName, micro));
     }
 
     @Rule
@@ -127,8 +125,8 @@ public class MealServiceTest {
                 LocalDate.of(2015, Month.MAY, 30),
                 LocalDate.of(2015, Month.MAY, 30), USER_ID), MEAL3, MEAL2, MEAL1);
     }
-    @After
-    public void testTimes(){
+    @AfterClass
+    public static void testTimes(){
         testsTime.forEach((k, v) -> logger.info("{} - {} microseconds", k, v));
     }
 }
