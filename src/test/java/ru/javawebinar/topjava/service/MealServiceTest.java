@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.Stopwatch;
@@ -46,9 +47,9 @@ public class MealServiceTest {
     private static void logInfo(Description description, long nanos) {
 
         String testName = description.getMethodName();
-        Long micro = TimeUnit.NANOSECONDS.toMicros(nanos);
+        Long micro = TimeUnit.NANOSECONDS.toMillis(nanos);
         testsTime.put(testName, micro);
-        logger.info(String.format("Test %s - %d microseconds",
+        logger.info(String.format("Test %s - %d milliseconds",
                 testName, micro));
     }
 
@@ -127,6 +128,8 @@ public class MealServiceTest {
     }
     @AfterClass
     public static void testTimes(){
-        testsTime.forEach((k, v) -> logger.info("{} - {} microseconds", k, v));
+        StringBuilder s = new StringBuilder();
+        testsTime.forEach((k, v) -> s.append("\n" + StringUtils.rightPad(k, 15, "") + " - " + StringUtils.rightPad("" + v, 3, "")+ " milliseconds"));
+        logger.info(s.toString());
     }
 }
