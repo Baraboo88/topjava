@@ -37,4 +37,9 @@ public class InMemoryUserRepositoryImpl extends InMemoryBaseRepositoryImpl<User>
                 .findFirst()
                 .orElse(null);
     }
+
+    @Override
+    public User findByIdAndFetchMealsEagerly(int id) {
+        return null;
+    }
 }
