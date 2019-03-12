@@ -63,7 +63,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Meal> getMealsOfUser(int id){
-        return repository.findByIdAndFetchMealsEagerly(id).getMeals();
+    public User getUserWithMeals(int id){
+        checkNotFound(repository.getWithFetchMeals(id).getMeals(), "User doesn't have meals");
+        return checkNotFoundWithId(repository.getWithFetchMeals(id), id);
     }
 }

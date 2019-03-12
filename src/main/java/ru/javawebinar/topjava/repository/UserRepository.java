@@ -18,5 +18,7 @@ public interface UserRepository {
 
     List<User> getAll();
 
-    User findByIdAndFetchMealsEagerly(int id);
+    default User getWithFetchMeals(int id){
+        throw new UnsupportedOperationException();
+    }
 }

@@ -18,24 +18,26 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
     private CrudMealRepository crudRepository;
 
     @Autowired
-    private DataJpaUserRepositoryImpl userRepository;
+    private CrudUserRepository userRepository;
 
     @Override
     public Meal save(Meal meal, int userId) {
+
         if (!meal.isNew() && get(meal.getId(), userId) == null) {
             return null;
         }
-        meal.setUser(userRepository.get(userId));
+        meal.setUser(userRepository.getOne(userId));
         return crudRepository.save(meal);
     }
 
     @Override
     public boolean delete(int id, int userId) {
-        return crudRepository.deleteByIdAndUser_Id(id, userId) != 0;
+        return crudRepository.deleteByIdAndUser_Id(id, userId) !=0;
     }
 
     @Override
     public Meal get(int id, int userId) {
+
         Meal meal = crudRepository.findById(id).orElse(null);
         return meal != null && meal.getUser().getId() == userId ? meal : null;
     }
@@ -51,7 +53,8 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
     }
 
     @Override
-    public Meal findByIdAndFetchUserEagerly(int id) {
-        return crudRepository.findByIdAndFetchUserEagerly(id).orElse(null);
+    public Meal getWithFetchUser(int id, int userId) {
+        Meal meal = crudRepository.findByIdAndFetchUserEagerly(id).orElse(null);
+        return meal != null && meal.getUser().getId() == userId ? meal : null;
     }
 }

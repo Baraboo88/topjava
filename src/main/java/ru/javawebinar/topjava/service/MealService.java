@@ -30,6 +30,6 @@ public interface MealService {
 
     Meal create(Meal meal, int userId);
 
-    Meal getUserOfMeal(int id);
+    Meal getMealWithUser(int id, int userId);
 
 }

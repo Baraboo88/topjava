@@ -72,8 +72,5 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
                         .collect(Collectors.toList());
     }
 
-    @Override
-    public Meal findByIdAndFetchUserEagerly(int id) {
-        return null;
-    }
+
 }

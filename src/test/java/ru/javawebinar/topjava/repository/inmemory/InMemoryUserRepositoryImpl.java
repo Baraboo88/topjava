@@ -39,7 +39,7 @@ public class InMemoryUserRepositoryImpl extends InMemoryBaseRepositoryImpl<User>
     }
 
     @Override
-    public User findByIdAndFetchMealsEagerly(int id) {
+    public User getWithFetchMeals(int id) {
         return null;
     }
 }

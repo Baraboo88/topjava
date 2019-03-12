@@ -21,6 +21,6 @@ public interface UserService {
 
     List<User> getAll();
 
-    List<Meal> getMealsOfUser(int id);
+    User getUserWithMeals(int id);
 
 }

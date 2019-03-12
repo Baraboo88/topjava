@@ -1,11 +1,19 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
+import org.slf4j.Logger;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataAccessException;
 
+import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.Role;
@@ -15,12 +23,39 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import static org.slf4j.LoggerFactory.getLogger;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.*;
 
-
+@ActiveProfiles("datajpa")
 public class UserServiceTest extends AbstractServiceTest {
+
+    private static StringBuilder results = new StringBuilder();
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    @Rule
+    // http://stackoverflow.com/questions/14892125/what-is-the-best-practice-to-determine-the-execution-time-of-the-bussiness-relev
+    public Stopwatch stopwatch = new Stopwatch() {
+        @Override
+        protected void finished(long nanos, Description description) {
+            String result = String.format("\n%-25s %7d", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+            results.append(result);
+            log.info(result + " ms\n");
+        }
+    };
+
+    @AfterClass
+    public static void printResult() {
+        log.info("\n---------------------------------" +
+                "\nTest                 Duration, ms" +
+                "\n---------------------------------" +
+                results +
+                "\n---------------------------------");
+    }
 
     @Autowired
     private UserService service;
@@ -92,7 +127,7 @@ public class UserServiceTest extends AbstractServiceTest {
 
     @Test
     public void getMealsOfUser() throws Exception{
-        List <Meal> meals = service.getMealsOfUser(USER_ID);
-        MealTestData.assertMatch(meals, MEAL1, MEAL2,MEAL3,MEAL4,MEAL5,MEAL6 );
+        List <Meal> meals = service.getUserWithMeals(USER_ID).getMeals();
+        MealTestData.assertMatch(meals, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1 );
     }
 }

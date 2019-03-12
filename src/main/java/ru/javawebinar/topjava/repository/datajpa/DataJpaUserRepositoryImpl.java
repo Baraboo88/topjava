@@ -3,10 +3,13 @@ package ru.javawebinar.topjava.repository.datajpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class DataJpaUserRepositoryImpl implements UserRepository {
@@ -41,7 +44,17 @@ public class DataJpaUserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findByIdAndFetchMealsEagerly(int id){
-        return crudRepository.findByIdAndFetchMealsEagerly(id).orElse(null);
+    public User getWithFetchMeals(int id){
+
+        User user = crudRepository.findByIdAndFetchMealsEagerly(id).orElse(null);
+
+        if(user != null && user.getMeals() != null) {
+            List<Meal> sortedMeal = user.getMeals().stream()
+                    .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+                    .collect(Collectors.toList());
+            user.setMeals(sortedMeal);
+           return user;
+        }
+        return get(id);
     }
 }
