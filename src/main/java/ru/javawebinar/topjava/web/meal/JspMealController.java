@@ -28,21 +28,21 @@ public class JspMealController extends AbstractMealController {
         return "meals";
     }
 
-    @GetMapping(params = "action=delete")
-    public String deleteMeal(@RequestParam("id") String mealId) {
+    @GetMapping(value = "delete/{id}")
+    public String deleteMeal(@PathVariable("id") String mealId) {
         delete(Integer.parseInt(mealId));
-        return "redirect:meals";
+        return "redirect:/meals";
     }
 
-    @GetMapping(params = "action=create")
+    @GetMapping(value = "create")
     public String createMeal(Model model) {
         final Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
         model.addAttribute("meal", meal);
         return "mealForm";
     }
 
-    @GetMapping(params = "action=update")
-    public String updateMeal(Model model, @RequestParam("id") String mealId) {
+    @GetMapping(value = "update/{id}")
+    public String updateMeal(Model model, @PathVariable("id") String mealId) {
         final Meal meal = get(Integer.parseInt(mealId));
         model.addAttribute("meal", meal);
         return "mealForm";
@@ -64,10 +64,10 @@ public class JspMealController extends AbstractMealController {
         } else {
             update(meal, Integer.parseInt(id));
         }
-        return "redirect:meals";
+        return "redirect:/meals";
     }
 
-    @PostMapping(value = "", params = "action=filter")
+    @PostMapping(value = "filter")
     public String getFiltered(@RequestParam("startDate") String startDate,
                               @RequestParam("endDate") String endDate,
                               @RequestParam("startTime") String startTime,

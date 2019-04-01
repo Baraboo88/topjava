@@ -49,12 +49,13 @@ public class JdbcUserRepositoryImpl implements UserRepository {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
             insertRoles(user);
-        } else {
+        } else if(namedParameterJdbcTemplate.update(
+                "UPDATE users SET name=:name, email=:email, password=:password, " +
+                        "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", parameterSource) !=0) {
+
             deleteRoles(user);
             insertRoles(user);
-            namedParameterJdbcTemplate.update(
-                    "UPDATE users SET name=:name, email=:email, password=:password, " +
-                            "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", parameterSource);
+
         }
         return user;
     }
@@ -90,9 +91,9 @@ public class JdbcUserRepositoryImpl implements UserRepository {
         return users;
     }
 
-    private void insertRoles(User user){
-        Set <Role> roles = user.getRoles();
-        if(!roles.isEmpty()){
+    private void insertRoles(User user) {
+        Set<Role> roles = user.getRoles();
+        if (!roles.isEmpty()) {
             jdbcTemplate.batchUpdate("INSERT INTO user_roles (user_id, role) VALUES (?, ?)", roles, roles.size(),
                     (ps, role) -> {
                         ps.setInt(1, user.getId());
@@ -101,15 +102,15 @@ public class JdbcUserRepositoryImpl implements UserRepository {
         }
     }
 
-    private void deleteRoles(User user){
+    private void deleteRoles(User user) {
         jdbcTemplate.update("DELETE FROM user_roles WHERE user_id =? ", user.getId());
     }
 
-    private User setRoles(User user){
-        if(user != null){
-            List <Role> roles = jdbcTemplate.query("SELECT role FROM user_roles WHERE user_id=?",
+    private User setRoles(User user) {
+        if (user != null) {
+            List<Role> roles = jdbcTemplate.query("SELECT role FROM user_roles WHERE user_id=?",
                     ((rs, rowNum) -> Role.valueOf(rs.getString("role"))), user.getId());
-        user.setRoles(roles);
+            user.setRoles(roles);
         }
 
         return user;

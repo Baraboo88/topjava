@@ -9,6 +9,5 @@ import static ru.javawebinar.topjava.Profiles.JDBC;
 @ActiveProfiles(JDBC)
 public class JdbcUserServiceTest extends AbstractUserServiceTest {
 
-    @Ignore
-    public void testValidation() throws Exception{}
+
 }
