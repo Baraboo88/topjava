@@ -19,6 +19,8 @@ function makeEditable(ctx) {
 
 function add() {
     form.find(":input").val("");
+
+
     $("#editRow").modal();
 }
 
@@ -77,3 +79,5 @@ function failNoty(jqXHR) {
         layout: "bottomRight"
     }).show();
 }
+
+
